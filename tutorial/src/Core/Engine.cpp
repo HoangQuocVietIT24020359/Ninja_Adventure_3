@@ -28,49 +28,22 @@ std::vector<SDL_Texture*> backgrounds;
 bool showWinMenu = false;
 bool hasPlayedWinSound = false;
 
-void ShowWinMenu(SDL_Renderer* renderer) {
-    SDL_Rect menuRect = {200, 150, 400, 300};  // Position & size
-    SDL_SetRenderDrawColor(renderer, 0, 0, 0, 255);  // Black background
-    SDL_RenderFillRect(renderer, &menuRect);
-
-    // Load a "YOU WIN" texture or render text using SDL_ttf
-    // Example using SDL_ttf:
-    TTF_Font* font = TTF_OpenFont("assets/Fonts/Roboto_Regular.ttf", 24);
-    SDL_Color color = {255, 255, 255};
-    SDL_Surface* surface = TTF_RenderText_Solid(font, "YOU WIN!", color);
-    SDL_Texture* texture = SDL_CreateTextureFromSurface(renderer, surface);
-
-    SDL_Rect textRect = {490, 310, 300, 100};  // Position text inside menu
-    SDL_RenderCopy(renderer, texture, nullptr, &textRect);
-
-    SDL_RenderPresent(renderer);  // Show menu
-
-    SDL_FreeSurface(surface);
-    SDL_DestroyTexture(texture);
-    TTF_CloseFont(font);
-}
-
 
 
 bool  Engine::Init() {
+    // Initialize SDL video and PNG image support
     if (SDL_Init(SDL_INIT_VIDEO) != 0 || IMG_Init(IMG_INIT_PNG) == 0) {
         SDL_Log("Failed to initialize SDL: %s", SDL_GetError());
         return false;
     }
-
+    
+    // Create game window
     m_Window = SDL_CreateWindow("Soft engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
     if (m_Window == nullptr) {
         SDL_Log("Failed to create Window: %s", SDL_GetError());
         return false;
     }
     
-    if (m_Window == nullptr) {
-        m_Window = SDL_CreateWindow("Soft engine", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, SCREEN_WIDTH, SCREEN_HEIGHT, 0);
-        if (m_Window == nullptr) {
-            SDL_Log("Failed to create Window: %s", SDL_GetError());
-            return false;
-        }
-    }
 
     m_Renderer = SDL_CreateRenderer(m_Window, -1, SDL_RENDERER_ACCELERATED | SDL_RENDERER_PRESENTVSYNC);
     if (m_Renderer == nullptr) {
@@ -199,13 +172,14 @@ void Engine::Update() {
     float dt = Timer::GetInstance()->GetDeltaTime();
     player->Update(dt, enemies, maps[0]->GetMapWidth(), maps[0]->GetMapHeight(), maps);
     Camera::GetInstance()->Update(dt);
-
-    static float damageCooldownEnemy = 0.0f; // Biến lưu thời gian chờ sát thương
-    static float damageCooldownTrap = 0.0f; // Biến lưu thời gian chờ sát thương
+    
+    // Damage cooldown timers
+    static float damageCooldownEnemy = 0.0f;
+    static float damageCooldownTrap = 0.0f;
     damageCooldownEnemy -= dt;
     damageCooldownTrap -= dt;
 
-    // Kiểm tra va chạm giữa nhân vật và kẻ địch
+    // Check player-enemy collisions
     for (auto& enemy : enemies) {
         enemy->Update(dt, maps[0]);
 
@@ -214,17 +188,17 @@ void Engine::Update() {
 
         if (Collision::CheckCollision(playerBox, enemyBox)) {
             if (damageCooldownEnemy <= 0.0f) {
-                player->TakeDamage(10.0f); // Nhận 10 sát thương khi va chạm với enemy
-                damageCooldownEnemy = 30.0f; // Chờ 3 giây trước khi nhận sát thương tiếp theo
+                player->TakeDamage(10.0f);
+                damageCooldownEnemy = 30.0f;
             }
         }
     }
 
-    // Kiểm tra va chạm giữa nhân vật và map4 (bẫy)
+    // Check player-trap collisions
     if (damageCooldownTrap <= 0.0f) {
         SDL_Rect playerBox = player->GetCollider();
 
-        MapParser* map4 = maps.size() > 3 ? maps[3] : nullptr; // Lấy map4 từ danh sách
+        MapParser* map4 = maps.size() > 3 ? maps[3] : nullptr;
 
         if (map4 && !map4->trapTiles.empty()) {
             for (auto& tile : map4->trapTiles) {
@@ -237,7 +211,7 @@ void Engine::Update() {
         }
     }
     
-    // Kiểm tra va chạm với item
+    // Handle item collection
        for (auto it = items.begin(); it != items.end(); ) {
            if (Collision::CheckCollision(player->GetCollider(), (*it)->GetCollider())) {
                if ((*it)->GetType() == ItemType::HEALTH) {
@@ -252,13 +226,13 @@ void Engine::Update() {
            }
        }
     
-    
+    // Handle checkpoint activation
     for (auto& cp : checkpoints) {
         cp->Update(dt);
         if (Collision::CheckCollision(player->GetCollider(), cp->GetCollider()) && !cp->IsActivated()) {
-            cp->Activate(); // Kích hoạt animation
+            cp->Activate();
             SoundManager::GetInstance()->PlaySound("buff");
-            player->SetLastCheckpoint(cp); // Cập nhật checkpoint cuối cùng cho Warrior
+            player->SetLastCheckpoint(cp); // Set as last checkpoint
             player->StartAppearEffect();
         }
     }
@@ -272,7 +246,8 @@ void Engine::Update() {
     healthBar->Update(healthPercent);
 //    manaBar->Update(manaPercent);
     
-
+    
+    // Check win condition
     if (Collision::CheckCollision(player->GetCollider(), goal->GetCollider())) {
         if (showWinMenu == false){
             menu->ShowWinMenu(currentLevel);
@@ -289,11 +264,11 @@ void Engine::Update() {
 
 
 void Engine::Render() {
-    SDL_SetRenderDrawColor(m_Renderer, 0, 0, 0, 0);
+    SDL_SetRenderDrawColor(m_Renderer, 0, 0, 0, 0); // Clear screen to black
     SDL_RenderClear(m_Renderer);
     
     if (menu->IsActive() || menu->IsWinActive()) {
-        menu->Render(currentLevel);  // Render the menu if active
+        menu->Render(currentLevel);
     }
     else{
         int offsetX = Camera::GetInstance()->GetPosition().X;
@@ -301,8 +276,8 @@ void Engine::Render() {
             
         for (size_t i = 0; i < backgrounds.size(); i++) {
             if (backgrounds[i]) {
-                SDL_Rect srcRect = {0, 0, 512, 320}; // Kích thước gốc
-                SDL_Rect dstRect = {0, 0, 1280, 720}; // Kích thước mới
+                SDL_Rect srcRect = {0, 0, 512, 320}; // Source texture size
+                SDL_Rect dstRect = {0, 0, 1280, 720}; // Scaled screen size
                 SDL_RenderCopy(m_Renderer, backgrounds[i], &srcRect, &dstRect);
             }
         }
@@ -344,10 +319,10 @@ void Engine::Events() {
     SDL_Event event;
     while (SDL_PollEvent(&event)) {
         if (event.type == SDL_QUIT) {
-            m_IsRunning = false;
+            m_IsRunning = false; // Quit game on window close
         }
 
-        // Detect 'Q' key press to show/hide menu
+        // Toggle menu with 'Q' key
         if (event.type == SDL_KEYDOWN && event.key.keysym.sym == SDLK_q) {
             if (menu->IsActive()) {
                 menu->Hide();
@@ -355,23 +330,23 @@ void Engine::Events() {
                 menu->ShowMenu();
             }
         }
-
+        // Handle menu interactions
         if (menu->IsActive()) {
             int selectedLevel = menu->HandleEvent(event);
             if (selectedLevel > 0) {
                 LoadMapsForLevel(selectedLevel);
             }
         }
-
+        // Handle win menu interactions
         if (menu->IsWinActive()) {
             int action = menu->HandleWinMenuEvent(event);
-            if (action == 1) {
+            if (action == 1) { // Back to main menu
                 menu->Hide();
                 menu->ShowMenu();
-            } else if (action == 2) {
+            } else if (action == 2) { // Replay level
                 menu->Hide();
                 LoadMapsForLevel(currentLevel);
-            } else if (action == 3 && currentLevel < 10) {
+            } else if (action == 3 && currentLevel < 10) { // Next level
                 menu->Hide();
                 LoadMapsForLevel(currentLevel + 1);
             }
@@ -383,10 +358,9 @@ void Engine::Events() {
 void Engine::LoadMapsForLevel(int level) {
     currentLevel = level;
 
-    // Giải phóng tất cả tài nguyên cũ trước khi load level mới
+    // Clear existing game state
     ResetGame();
 
-    // Load maps mới
     std::string levelPath = "assets/levels/level" + std::to_string(level) + "/";
 
     maps.push_back(new MapParser(m_Renderer));
@@ -407,29 +381,27 @@ void Engine::LoadMapsForLevel(int level) {
     maps.push_back(new MapParser(m_Renderer));
     maps.back()->LoadMap((levelPath + "brush.map").c_str(), "assets/maps/Ground.png");
 
-    // Tạo lại player
-    player = new Warrior(new Properties("player", 100, 200, 128, 128), maps);
+
+    player = new Warrior(new Properties("player", 100, 500, 128, 128), maps);
     Camera::GetInstance()->SetTarget(player->GetOrigin());
     Camera::GetInstance()->SetMapSize(maps[0]->GetMapWidth(), maps[0]->GetMapHeight());
 
 
-    // Thêm vật phẩm mới
     if (level != 2){
-        // Thêm kẻ địch mới
         enemies.push_back(new Enemy(new Properties("snail", 1150, 311, 48, 32), maps[0], 8));
         enemies.push_back(new Enemy(new Properties("snail", 1350, 311, 48, 32), maps[0], 8));
         enemies.push_back(new Enemy(new Properties("snail", 2750, 500, 48, 32), maps[0], 8));
         enemies.push_back(new Enemy(new Properties("fox", 2600, 500, 80, 48), maps[0], 8));
         
         items.push_back(new Item("health_potion", 1300, 375, 32, 32, ItemType::HEALTH));
-        // Thêm checkpoint
+     
         checkpoints.push_back(new Checkpoint(m_Renderer, 1450, 300, 50, 100));
         
         items.push_back(new Item("health_potion", 1800, 550, 32, 32, ItemType::HEALTH));
         items.push_back(new Item("health_potion", 2900, 550, 32, 32, ItemType::HEALTH));
     }
     
-    // Đặt lại mục tiêu (goal)
+  
     goal = new Goal(m_Renderer, 3500, 445, 536, 466);
 }
 
@@ -438,7 +410,7 @@ bool Engine::Clean() {
     TextureManager::GetInstance()->Clean();
     
     backgrounds.clear();
-    // Xóa tất cả các bản đồ trong danh sách
+  
     for (auto& map : maps) {
         delete map;
     }
@@ -469,41 +441,42 @@ void Engine::Quit() {
 
 
 void Engine::ResetGame() {
-    // Xóa tất cả các enemy
+   
     for (auto enemy : enemies) {
         delete enemy;
     }
     enemies.clear();
 
-    // Xóa các vật phẩm (items)
+    
     for (auto item : items) {
         delete item;
     }
     items.clear();
 
-    // Xóa checkpoint
+   
     for (auto cp : checkpoints) {
         delete cp;
     }
     checkpoints.clear();
 
-    // Xóa maps
+  
     for (auto map : maps) {
         delete map;
     }
     maps.clear();
 
-    // Xóa player
+   
     if (player) {
         delete player;
         player = nullptr;
     }
 
-    // Xóa goal
+    
     if (goal) {
         delete goal;
         goal = nullptr;
     }
     
     showWinMenu = false;
+    hasPlayedWinSound = false;
 }

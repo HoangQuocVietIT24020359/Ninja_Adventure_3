@@ -42,9 +42,30 @@
 		DDFAFA6E2D6F66E000DD3ED1 /* SDL2_mixer.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = SDL2_mixer.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
+/* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
+		DD2E37952D92E57A002860B2 /* Exceptions for "tutorial" folder in "tutorial" target */ = {
+			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
+			membershipExceptions = (
+				assets/characters/Samurai_Archer/Attack_1.png,
+				assets/characters/Samurai_Archer/Attack_2.png,
+				assets/characters/Samurai_Archer/Attack_3.png,
+				assets/characters/Samurai_Archer/Dead.png,
+				assets/characters/Samurai_Archer/Hurt.png,
+				assets/characters/Samurai_Archer/Idle.png,
+				assets/characters/Samurai_Archer/Jump.png,
+				assets/characters/Samurai_Archer/Run.png,
+				assets/characters/Samurai_Archer/Walk.png,
+			);
+			target = DDDB650B2D5796B800BD32DB /* tutorial */;
+		};
+/* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
+
 /* Begin PBXFileSystemSynchronizedRootGroup section */
 		DDDB650E2D5796B900BD32DB /* tutorial */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
+			exceptions = (
+				DD2E37952D92E57A002860B2 /* Exceptions for "tutorial" folder in "tutorial" target */,
+			);
 			path = tutorial;
 			sourceTree = "<group>";
 		};

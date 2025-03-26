@@ -12,7 +12,7 @@ void Goal::Render(int offsetX, int offsetY) {
     SDL_Rect srcRect = {0, 0, 536, 466};  // Original size of the texture
 
     // Scale Down (Adjust These Values)
-    float scaleFactor = 0.3f; // Adjust scale factor (e.g., 0.5 for half size)
+    float scaleFactor = 0.3f; // Adjust scale factor 
     int newWidth = static_cast<int>(m_Width * scaleFactor);
     int newHeight = static_cast<int>(m_Height * scaleFactor);
 

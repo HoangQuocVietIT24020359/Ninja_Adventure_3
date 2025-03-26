@@ -9,22 +9,19 @@
 
 class Enemy : public Character {
 public:
-    Enemy(Properties* props, MapParser* mapParser, int walkFrames); // Thêm đầy đủ tham số
+    Enemy(Properties* props, MapParser* mapParser, int walkFrames);
+    // Destructor
     virtual ~Enemy();
 
     virtual void Draw() override;
     virtual void Clean() override;
-    virtual void Update(float dt) override; // Ghi đè đúng cách
+    virtual void Update(float dt) override;
     void Update(float dt, MapParser* MapParsers);
 
-
-    // Đánh dấu kẻ địch là đã chết
     void SetDead(bool dead);
-    
-    // Kiểm tra kẻ địch có chết hay không
     bool IsDead() const { return m_IsDead; }
 
-    // Getter cho Collider
+    // Returns the enemy's collider as an SDL_Rect for collision detection
     SDL_Rect GetCollider() const {
         return { static_cast<int>(m_Transform->X),
                  static_cast<int>(m_Transform->Y),
@@ -39,14 +36,14 @@ private:
     MapParser* m_MapParser;
     bool movingRight;
     float moveSpeed;
-    float leftBoundary;
-    float rightBoundary;
+    float leftBoundary;   // Left boundary for enemy patrol
+    float rightBoundary;  // Right boundary for enemy patrol
     std::string m_TextureID;
-    int m_WalkFrames;  // Số frame khi đi
-    int m_DeadFrames;  // Số frame khi chết
+    int m_WalkFrames;
+    int m_DeadFrames;
 
 
-    bool m_IsDead = false; // Thêm biến để kiểm tra trạng thái kẻ địch
+    bool m_IsDead = false; 
 };
 
 #endif // ENEMY_H

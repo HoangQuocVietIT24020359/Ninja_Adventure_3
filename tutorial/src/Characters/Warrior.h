@@ -20,28 +20,30 @@ public:
 
     virtual void Draw() override;
     virtual void Clean() override;
-    virtual void Update(float dt) override; // Ghi đè đúng cách
-    void Update(float dt, std::vector<Enemy*>& enemies, int mapWidth, int mapHeight, std::vector<MapParser*> maps); //  Không dùng override vì không có trong Character
+    virtual void Update(float dt) override;
+    void Update(float dt, std::vector<Enemy*>& enemies, int mapWidth, int mapHeight, std::vector<MapParser*> maps);
 
 
-    // Getter cho máu và mana
+    // Getters for health and mana values
     float GetHealth() const { return m_Health; }
     float GetMaxHealth() const { return m_MaxHealth; }
     float GetMana() const { return m_Mana; }
     float GetMaxMana() const { return m_MaxMana; }
 
-    // Setter để thay đổi giá trị máu/mana
+    // Functions to modify health and mana
     void TakeDamage(float damage);
     void UseMana(float amount);
     void Heal(float amount);
+    // Set the size of the appearance effect (when spawning or respawning)
     void SetAppearEffectSize(int width, int height);
 
     void RestoreMana(float amount);
-    void StartAppearEffect(); // Hàm để kích hoạt hiệu ứng xuất hiện
+    void StartAppearEffect();
+    // Set the last checkpoint where the warrior should respawn
     void SetLastCheckpoint(Checkpoint* checkpoint) { m_LastCheckpoint = checkpoint; }
 
     
-    // Getter cho Collider
+    // Get the collision box of the warrior
     SDL_Rect GetCollider() const {
         return { static_cast<int>(m_Transform->X),
                  static_cast<int>(m_Transform->Y),
@@ -50,14 +52,14 @@ public:
     }
 
 private:
-    void HandleRespawn(float dt); // Xử lý thời gian chờ hồi sinh
-    void Respawn(); // Hồi sinh nhân vật
-
+    void HandleRespawn(float dt);
+    void Respawn();
+    
     std::unique_ptr<Animation> m_Animation;
     std::unique_ptr<RigidBody> m_RigidBody;
     std::unique_ptr<Animation> m_AppearEffect;
     bool m_IsAppearing = false;
-    float m_AppearTimer = 0.0f; // Biến để đếm thời gian hiệu ứng
+    float m_AppearTimer = 0.0f;
     Checkpoint* m_LastCheckpoint;
     std::vector<MapParser*> m_Maps;
     SDL_Rect m_BoundingBox;
@@ -65,17 +67,17 @@ private:
     float m_MaxHealth;
     float m_Mana;
     float m_MaxMana;
-    bool m_IsJumping;  // Thêm biến này để sửa lỗi
+    bool m_IsJumping;
     bool m_IsGrounded;
     bool m_IsDead = false;
     bool m_IsRight = true;
     float m_RespawnCounter;
     float m_JumpTime;
     float m_JumpForce;
-    float m_RespawnX = 100.0f; // Vị trí hồi sinh X mặc định
-        float m_RespawnY = 200.0f; // Vị trí hồi sinh Y mặc định
-    int m_AppearWidth = 96;  // Chiều rộng mặc định
-    int m_AppearHeight = 96; // Chiều cao mặc định
+    float m_RespawnX = 100.0f;
+    float m_RespawnY = 200.0f;
+    int m_AppearWidth = 96;
+    int m_AppearHeight = 96;
     SDL_RendererFlip Player_flip = SDL_FLIP_NONE;
     
 

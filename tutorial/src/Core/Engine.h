@@ -5,8 +5,8 @@
 #include "SDL2_image/SDL_image.h"
 #include "MapParser.h"
 #include "Camera.h"
-#include "Collision.h" // Đảm bảo include nếu dùng va chạm
-#include "Enemy.h" // Thêm Enemy
+#include "Collision.h"
+#include "Enemy.h" 
 #include "Goal.h"
 #include <vector>
 #include "Menu.h" 
@@ -32,13 +32,11 @@ public:
     inline bool IsRunning() { return m_IsRunning; }
     inline SDL_Renderer* GetRenderer() { return m_Renderer; }
 
-    // Trả về danh sách bản đồ
+
     std::vector<MapParser*>& GetMapLayers() { return maps; }
 
-    // Trả về con trỏ bản đồ chính
     MapParser* GetMapParser() { return mapParser; }
 
-    // Trả về kích thước màn hình
     int GetScreenWidth() const { return SCREEN_WIDTH; }
     int GetScreenHeight() const { return SCREEN_HEIGHT; }
 
@@ -50,11 +48,11 @@ private:
     SDL_Renderer* m_Renderer = nullptr;
     SDL_Texture* m_Background = nullptr;
 
-    std::vector<MapParser*> maps;  // Danh sách chứa nhiều bản đồ
-    MapParser* mapParser = nullptr; // Con trỏ bản đồ chính
+    std::vector<MapParser*> maps;
+    MapParser* mapParser = nullptr;
     
-    Menu* menu = nullptr;  // Add Menu object
-    std::vector<Enemy*> enemies; // Danh sách quái vật
+    Menu* menu = nullptr;  
+    std::vector<Enemy*> enemies;
     static Engine* s_Instance;
     Goal* goal;
     int currentLevel = 1;

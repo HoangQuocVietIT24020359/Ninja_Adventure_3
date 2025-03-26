@@ -21,7 +21,6 @@ public:
     inline int GetMapWidth(){return m_MapWidth;}
     inline int GetMapHeight(){return m_MapHeight;}
     
-    // Danh sách các tile va chạm
     std::vector<SDL_Rect> solidTiles;
     std::vector<SDL_Rect> trapTiles;
 

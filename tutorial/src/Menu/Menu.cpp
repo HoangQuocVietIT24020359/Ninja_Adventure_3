@@ -33,8 +33,8 @@ Menu::Menu(SDL_Renderer* renderer) : m_Renderer(renderer), m_IsActive(true), m_I
 void Menu::ShowWinMenu(int level) {
     m_IsWinActive = true;
     m_IsActive = false;
-    currentLevel = level; // Store current level
-    CreateWinButtons();   // Generate win menu buttons
+    currentLevel = level;
+    CreateWinButtons();
 }
 
 
@@ -56,14 +56,13 @@ void Menu::CreateLevelButtons() {
         btn.rect = { startX + ((i - 1) % columns) * (buttonWidth + 30),
                      startY + ((i - 1) / columns) * (buttonHeight + 30),
                      buttonWidth, buttonHeight };
-        btn.text = std::to_string(i); // Dùng text thay vì level
+        btn.text = std::to_string(i);
         btn.isHovered = false;
-        UpdateButtonTexture(btn, {204, 204, 204}); // Blue by default
+        UpdateButtonTexture(btn, {204, 204, 204});
         buttons.push_back(btn);
     }
 }
 
-// Update button text texture
 void Menu::UpdateButtonTexture(Button& button, SDL_Color color) {
     SDL_Surface* surface = TTF_RenderText_Solid(m_Font, button.text.c_str(), {255, 255, 255});
     button.textTexture = SDL_CreateTextureFromSurface(m_Renderer, surface);
@@ -72,9 +71,8 @@ void Menu::UpdateButtonTexture(Button& button, SDL_Color color) {
 
 
 void Menu::Render(int level) {
-    // Render background
     SDL_RenderCopy(m_Renderer, backgroundTexture, NULL, NULL);
-
+    // Render level selection menu if active
     if (m_IsActive) {
         for (auto& button : buttons) {
             SDL_SetRenderDrawColor(m_Renderer,
@@ -107,7 +105,7 @@ void Menu::Render(int level) {
         }
     }
 }
-// Handle hover & clicks
+
 int Menu::HandleEvent(SDL_Event& event) {
     int x, y;
     SDL_GetMouseState(&x, &y);
@@ -120,16 +118,15 @@ int Menu::HandleEvent(SDL_Event& event) {
 
         if (event.type == SDL_MOUSEBUTTONDOWN && isHovered) {
             Hide();
-            return std::stoi(button.text); // Chuyển text thành số để lấy level
+            return std::stoi(button.text);
         }
     }
     
-    return -1; // No button clicked
+    return -1;
 }
 
 
 
-// Handle hover & clicks
 int Menu::HandleWinMenuEvent(SDL_Event& event) {
     int x, y;
     SDL_GetMouseState(&x, &y);
@@ -142,11 +139,11 @@ int Menu::HandleWinMenuEvent(SDL_Event& event) {
         button.isHovered = isHovered;
 
         if (event.type == SDL_MOUSEBUTTONDOWN && isHovered) {
-            return i + 1; // Trả về chỉ mục của nút
+            return i + 1;
         }
     }
 
-    return -1; // Không có nút nào được nhấn
+    return -1;
 }
 
 
@@ -164,9 +161,9 @@ void Menu::CreateWinButtons() {
     for (int i = 0; i < labels.size(); i++) {
         Button btn;
         btn.rect = { startX, startY + i * (buttonHeight + 30), buttonWidth, buttonHeight };
-        btn.text = labels[i];  // Gán nội dung chữ thay vì số
+        btn.text = labels[i];
         btn.isHovered = false;
-        UpdateButtonTexture(btn, {0, 255, 0});  // Cập nhật nội dung
+        UpdateButtonTexture(btn, {0, 255, 0});  
         winButtons.push_back(btn);
     }
 }

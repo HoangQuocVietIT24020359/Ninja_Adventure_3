@@ -33,12 +33,26 @@ bool TextureManager::Load(string id, string filename){
     return true;
 }
 
+// Draw a full texture at specified coordinates
+// Parameters:
+//   id - Texture ID to draw
+//   x, y - Screen coordinates
+//   width, height - Dimensions of the texture
+//   flip - SDL flip flag (horizontal/vertical)
 void TextureManager::Draw(string id, int x, int y, int width, int height, SDL_RendererFlip flip){
     SDL_Rect srcRect = {0, 0, width, height};
     SDL_Rect dstRect = {x, y, width, height};
     SDL_RenderCopyEx(Engine::GetInstance()->GetRenderer(), m_TextureMap[id], &srcRect, &dstRect, 0, nullptr, flip);
 }
 
+// Draw a specific frame from a sprite sheet
+// Parameters:
+//   id - Texture ID of the sprite sheet
+//   x, y - Screen coordinates
+//   width, height - Frame dimensions
+//   row - Row number in sprite sheet (1-based)
+//   frame - Frame number in the row (0-based)
+//   flip - SDL flip flag
 void TextureManager::DrawFrame(string id, int x, int y, int width, int height, int row, int frame, SDL_RendererFlip flip)
 {
     SDL_Rect srcRect = {width*frame, height * (row - 1), width, height};

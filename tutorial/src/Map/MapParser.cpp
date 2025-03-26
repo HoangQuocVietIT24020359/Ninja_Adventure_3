@@ -13,7 +13,12 @@ MapParser::~MapParser() {
     }
 }
 
-// Load bản đồ, thêm tùy chọn xác định tile va chạm
+// Load a map from file and its associated tileset
+// Parameters:
+//   mapFile - Path to the map data file
+//   tilesetFile - Path to the tileset image
+//   isSolid - Flag to mark tiles as solid (collision)
+//   isTrap - Flag to mark tiles as traps (damage)
 void MapParser::LoadMap(const char* mapFile, const char* tilesetFile, bool isSolid, bool isTrap) {
     // Load tileset
     SDL_Surface* tempSurface = IMG_Load(tilesetFile);
@@ -21,7 +26,7 @@ void MapParser::LoadMap(const char* mapFile, const char* tilesetFile, bool isSol
         std::cerr << "Failed to load tileset: " << tilesetFile << " - " << IMG_GetError() << std::endl;
         return;
     }
-
+    // Convert surface to texture
     SDL_Texture* tileset = SDL_CreateTextureFromSurface(renderer, tempSurface);
     SDL_FreeSurface(tempSurface);
 
@@ -30,11 +35,11 @@ void MapParser::LoadMap(const char* mapFile, const char* tilesetFile, bool isSol
         return;
     }
 
-    // Lấy chiều rộng thực tế của tileset
+    // Query tileset width for tile calculations
     int tilesetWidth;
     SDL_QueryTexture(tileset, nullptr, nullptr, &tilesetWidth, nullptr);
 
-    // Load map file
+    // Open and read map file
     std::ifstream file(mapFile);
     if (!file) {
         std::cerr << "Failed to open map file: " << mapFile << std::endl;
@@ -45,20 +50,22 @@ void MapParser::LoadMap(const char* mapFile, const char* tilesetFile, bool isSol
     std::vector<std::vector<int>> mapData;
     std::string line;
     int row = 0;
-
+    
+    // Parse map file line by line
     while (std::getline(file, line)) {
         std::vector<int> tileRow;
         std::stringstream ss(line);
         int tile;
         char comma;
         int col = 0;
-
+        
+        // Parse each tile value in the row
         while (ss >> tile) {
             tileRow.push_back(tile);
-            ss >> comma;
-
+            ss >> comma; // Skip comma separator
+            
+            // Add tile to collision or trap list if applicable
             if (isSolid && tile != -1) {
-                // Nếu là bản đồ solid, thêm tile vào danh sách va chạm
                 SDL_Rect solidTile = { col * tileSize, row * tileSize, tileSize, tileSize };
                 solidTiles.push_back(solidTile);
             }
@@ -70,21 +77,21 @@ void MapParser::LoadMap(const char* mapFile, const char* tilesetFile, bool isSol
             col++;
         }
         
+        // Update map width if current row is wider
         if (col > m_MapWidth) {
-            m_MapWidth = max(m_MapWidth, col * 16); // Cập nhật chiều rộng lớn nhất
+            m_MapWidth = max(m_MapWidth, col * 16);
         }
 
 
         mapData.push_back(tileRow);
         row++;
-        m_MapHeight = max(m_MapHeight, row * 16); // Tổng số dòng chính là chiều cao
+        m_MapHeight = max(m_MapHeight, row * 16); // Update map height
     }
     
-    // Lưu vào danh sách bản đồ
+
     maps.push_back({mapData, tileset, tilesetWidth});
 }
 
-// Render tất cả các bản đồ đã load
 void MapParser::Render(int offsetX, int offsetY) {
     for (const auto& mapData : maps) {
         if (!mapData.tileset) continue;
@@ -95,7 +102,8 @@ void MapParser::Render(int offsetX, int offsetY) {
             for (size_t j = 0; j < mapData.tiles[i].size(); j++) {
                 int tileIndex = mapData.tiles[i][j];
                 if (tileIndex == -1) continue;
-
+                
+                // Calculate source rectangle from tileset
                 int srcX = (tileIndex % tilesPerRow) * tileSize;
                 int srcY = (tileIndex / tilesPerRow) * tileSize;
 

@@ -12,7 +12,7 @@ void Checkpoint::Update(float dt) {
     if (m_Activated) {
         m_AnimationTimer += dt;
         if (m_AnimationTimer > 0.1f) {
-            m_Frame = (m_Frame + 1) % 10; // Giả sử có 10 frames
+            m_Frame = (m_Frame + 1) % 10; 
             m_AnimationTimer = 0;
         }
     }
