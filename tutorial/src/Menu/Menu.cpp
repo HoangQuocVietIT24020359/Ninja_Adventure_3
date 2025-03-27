@@ -26,17 +26,28 @@ Menu::Menu(SDL_Renderer* renderer) : m_Renderer(renderer), m_IsActive(true), m_I
 
     // Tạo texture chữ "You Win!"
     SDL_Surface* winSurface = TTF_RenderText_Solid(m_Font, "YOU WIN!", {255, 0, 0});
+    SDL_Surface* lossSurface = TTF_RenderText_Solid(m_Font, "GAME OVER!", {255, 0, 0});
     winTextTexture = SDL_CreateTextureFromSurface(m_Renderer, winSurface);
+    lossTextTexture = SDL_CreateTextureFromSurface(m_Renderer, lossSurface);
     SDL_FreeSurface(winSurface);
+    SDL_FreeSurface(lossSurface);
 }
 
 void Menu::ShowWinMenu(int level) {
     m_IsWinActive = true;
     m_IsActive = false;
+    m_IsLossActive = false;
     currentLevel = level;
     CreateWinButtons();
 }
 
+void Menu::ShowLossMenu(int level) {
+    m_IsWinActive = false;
+    m_IsActive = false;
+    m_IsLossActive = true;
+    currentLevel = level;
+    CreateLossButtons();
+}
 
 
 Menu::~Menu() {
@@ -84,8 +95,7 @@ void Menu::Render(int level) {
             SDL_RenderCopy(m_Renderer, button.textTexture, NULL, &button.rect);
         }
     }
-
-    if (m_IsWinActive) {
+    else if (m_IsWinActive) {
         // Render "You Win!" text
         SDL_Rect winRect = {440, 100, 400, 200};
         SDL_RenderCopy(m_Renderer, winTextTexture, NULL, &winRect);
@@ -104,6 +114,21 @@ void Menu::Render(int level) {
             SDL_RenderCopy(m_Renderer, button.textTexture, NULL, &button.rect);
         }
     }
+    
+    else if (m_IsLossActive) {
+            SDL_Rect lossRect = {440, 100, 400, 200};
+            SDL_RenderCopy(m_Renderer, lossTextTexture, NULL, &lossRect);
+
+            for (auto& button : lossButtons) {
+                SDL_SetRenderDrawColor(m_Renderer,
+                    button.isHovered ? 0 : 204,
+                    button.isHovered ? 255 : 204,  
+                    button.isHovered ? 204 : 204,
+                    255);
+                SDL_RenderFillRect(m_Renderer, &button.rect);
+                SDL_RenderCopy(m_Renderer, button.textTexture, NULL, &button.rect);
+            }
+        }
 }
 
 int Menu::HandleEvent(SDL_Event& event) {
@@ -165,5 +190,42 @@ void Menu::CreateWinButtons() {
         btn.isHovered = false;
         UpdateButtonTexture(btn, {0, 255, 0});  
         winButtons.push_back(btn);
+    }
+}
+
+int Menu::HandleLossMenuEvent(SDL_Event& event) {
+    int x, y;
+    SDL_GetMouseState(&x, &y);
+
+    for (size_t i = 0; i < lossButtons.size(); i++) {
+        auto& button = lossButtons[i];
+        bool isHovered = (x >= button.rect.x && x <= button.rect.x + button.rect.w &&
+                          y >= button.rect.y && y <= button.rect.y + button.rect.h);
+
+        button.isHovered = isHovered;
+        if (event.type == SDL_MOUSEBUTTONDOWN && isHovered) {
+            return i + 1;
+        }
+    }
+
+    return -1;
+}
+
+
+void Menu::CreateLossButtons() {
+    lossButtons.clear();
+
+    int startX = 440, startY = 330;
+    int buttonWidth = 400, buttonHeight = 60;
+    
+    std::vector<std::string> labels = {"Return to Menu", "Restart Level"};
+    
+    for (int i = 0; i < labels.size(); i++) {
+        Button btn;
+        btn.rect = { startX, startY + i * (buttonHeight + 30), buttonWidth, buttonHeight };
+        btn.text = labels[i];
+        btn.isHovered = false;
+        UpdateButtonTexture(btn, {0, 255, 0});
+        lossButtons.push_back(btn);
     }
 }

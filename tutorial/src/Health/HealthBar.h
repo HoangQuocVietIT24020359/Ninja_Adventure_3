@@ -11,7 +11,9 @@ class HealthBar {
 public:
     HealthBar(SDL_Renderer* renderer, int x, int y, int width, int height, const std::string& texturePath, BarType type);
     ~HealthBar();
-
+    
+    void RestartLifePoints(){m_lifepoints = 3;}
+    int GetLifePoints(){return m_lifepoints;}
     void Update(float value);
     void Render();
 
@@ -22,6 +24,8 @@ private:
     SDL_Rect m_TextureRect;
     SDL_Texture* m_Texture;
     float m_Value;
+    int m_lifepoints = 3;
+    bool state_respawn = true;
     BarType m_Type;
 };
 

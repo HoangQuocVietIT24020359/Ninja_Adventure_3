@@ -215,7 +215,6 @@ void Warrior::TakeDamage(float damage) {
         m_IsDead = true;
         m_RespawnCounter = 15.0f; // Set respawn delay
         m_Animation->SetProps("player_dead", 1, 6, 400, m_Flip);  // Chạy animation chết
-      
     }
 }
 

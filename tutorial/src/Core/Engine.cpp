@@ -26,6 +26,8 @@ std::vector<Checkpoint*> checkpoints;
 Checkpoint* lastCheckpoint = nullptr;
 std::vector<SDL_Texture*> backgrounds;
 bool showWinMenu = false;
+bool showLossMenu = false;
+
 bool hasPlayedWinSound = false;
 
 
@@ -137,7 +139,7 @@ bool  Engine::Init() {
     map6->LoadMap("assets/levels/level2/brush.map", "assets/maps/Ground.png");
     maps.push_back(map6);
 
-    player = new Warrior(new Properties("player", 100, 200, 128, 128), maps);
+    player = new Warrior(new Properties("player", 100, 500, 128, 128), maps);
 
     Camera::GetInstance()->SetTarget(player->GetOrigin());
     Camera::GetInstance()->SetMapSize(map1->GetMapWidth(), map1->GetMapHeight());
@@ -161,6 +163,7 @@ bool  Engine::Init() {
     goal = new Goal(m_Renderer, 3500, 445, 536, 466);
 
     healthBar = new HealthBar(m_Renderer, 50, 30, 200, 20, "assets/Health/heart.png", BarType::HEALTH);
+    healthBar->RestartLifePoints();
 //    manaBar = new HealthBar(m_Renderer, 50, 70, 200, 20, "assets/Health/mana.png", BarType::MANA);
     
     return m_IsRunning = true;
@@ -259,6 +262,17 @@ void Engine::Update() {
         }
        
     }
+    
+    if (healthBar->GetLifePoints() == 0){
+        if (showLossMenu == false){
+            menu->ShowLossMenu(currentLevel);
+            if (!hasPlayedWinSound) {
+                SoundManager::GetInstance()->PlaySound("level_finish");
+                hasPlayedWinSound = true;  // Ensure sound plays only once
+            }
+            showLossMenu = true;
+        }
+    }
 
 }
 
@@ -267,7 +281,7 @@ void Engine::Render() {
     SDL_SetRenderDrawColor(m_Renderer, 0, 0, 0, 0); // Clear screen to black
     SDL_RenderClear(m_Renderer);
     
-    if (menu->IsActive() || menu->IsWinActive()) {
+    if (menu->IsActive() || menu->IsWinActive() || menu->IsLossActive()) {
         menu->Render(currentLevel);
     }
     else{
@@ -349,6 +363,18 @@ void Engine::Events() {
             } else if (action == 3 && currentLevel < 10) { // Next level
                 menu->Hide();
                 LoadMapsForLevel(currentLevel + 1);
+            }
+        }
+        
+        if (menu->IsLossActive()) {
+            int action = menu->HandleLossMenuEvent(event);
+            if (action == 1) { // Back to main menu
+                healthBar->RestartLifePoints();
+                menu->Hide();
+                menu->ShowMenu();
+            } else if (action == 2) { // Replay level
+                menu->Hide();
+                LoadMapsForLevel(currentLevel);
             }
         }
     }
@@ -478,5 +504,7 @@ void Engine::ResetGame() {
     }
     
     showWinMenu = false;
+    showLossMenu = false;
     hasPlayedWinSound = false;
+    healthBar->RestartLifePoints();
 }
