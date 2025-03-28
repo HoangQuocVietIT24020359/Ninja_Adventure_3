@@ -38,7 +38,7 @@ Rất sắc nhọn và có thể khiến bạn chảy máu nếu chạm vào ch�
 
 __4. Thuốc hồi máu__
 
-<img src="https://github.com/HoangQuocVietIT24020359/Ninja_Adventure_2/blob/main/tutorial/assets/Health/heath_potion.png" width="200">
+<img src="https://github.com/HoangQuocVietIT24020359/Ninja_Adventure_3/blob/main/tutorial/assets/Health/heath_potion.png" width="200">
 
 
 Xuất hiện ngẫu nhiên trên map, khi sử dụng sẽ hồi lại cho người chơi 1 lượng máu.
