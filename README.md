@@ -103,8 +103,14 @@ Khi người chơi đi đến cuối bản đồ (Đã hoàn thành màn chơi).
 - [Timer](https://github.com/HoangQuocVietIT24020359/Ninja_Adventure_3/tree/main/tutorial/src/Timer): Xử lý bộ đếm thời gian để đồng bộ các animation và hành động trong game.
 - [Input](https://github.com/HoangQuocVietIT24020359/Ninja_Adventure_3/tree/main/tutorial/src/inputs): Xử lý đầu vào từ người chơi, bao gồm bàn phím và chuột.
 - [Main.cpp](https://github.com/HoangQuocVietIT24020359/Ninja_Adventure_3/blob/main/tutorial/main.cpp): File chính để chạy game.
-# References
+# Mức độ sử dụng AI (60%)
+- Ban đầu em sẽ thiết kế cấu trúc project và code phần khung game. Sau đó sẽ dùng AI để hỗ trợ code các phần logic nhỏ lẻ, đồng thời kiểm tra và sửa lỗi nếu cần. Quy trình này lặp lại liên tục cho đến khi hoàn thành project.
+# Các nguồn tham khảo
 - [Youtube game SDL adventure](https://www.youtube.com/watch?v=1KD4Ae0tX0g&list=PL-K0viiuJ2RctP5nlJlqmHGeh66-GOZR_) 
-- https://wiki.libsdl.org/SDL2/Tutorials
-- https://lazyfoo.net/tutorials/SDL/index.php
+- [SDL2 Wiki](https://wiki.libsdl.org/SDL2/Tutorials)
+- [Lazy Foo' Productions](https://lazyfoo.net/tutorials/SDL/index.php)
+- [tilsets để tạo map](https://aamatniekss.itch.io/free-pixelart-platformer-tileset)
+- [lấy quái vật](https://anokolisa.itch.io/sidescroller-pixelart-sprites-asset-pack-forest-16x16)
+- [Create button](https://www.youtube.com/watch?v=IH9qNtKn9AU)
+
 
