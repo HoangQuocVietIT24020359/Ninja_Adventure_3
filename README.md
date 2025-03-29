@@ -7,7 +7,8 @@ Dự án trò chơi này là một phần của môn học "Lập trình nâng c
 - Dự án này được phát triển bằng __ngôn ngữ lập trình C++__ và sử dụng __thư viện SDL2__.
 - Dự án được lấy cảm hứng từ tựa game __Savage Pursuit__.
 - Trong __Ninja Adventure__, người chơi sẽ bước vào một thế giới phong phú đầy màu sắc và mạo hiểm. Họ sẽ nhập vai vào một ninja dũng mãnh, sẵn sàng đối đầu với những thử thách khốc liệt, những quái vật cản đường và tiến lên phía trước.
-
+# Ngưỡng điểm 
+- Ngưỡng điểm mong muốn đạt được: 9-10 điểm.
 # Hướng dẫn chơi  
 ## Giao diện ban đầu
 ![image](https://github.com/HoangQuocVietIT24020359/Ninja_Adventure_3/blob/main/tutorial/images/menu_levels.jpg)
@@ -102,4 +103,8 @@ Khi người chơi đi đến cuối bản đồ (Đã hoàn thành màn chơi).
 - [Timer](https://github.com/HoangQuocVietIT24020359/Ninja_Adventure_3/tree/main/tutorial/src/Timer): Xử lý bộ đếm thời gian để đồng bộ các animation và hành động trong game.
 - [Input](https://github.com/HoangQuocVietIT24020359/Ninja_Adventure_3/tree/main/tutorial/src/inputs): Xử lý đầu vào từ người chơi, bao gồm bàn phím và chuột.
 - [Main.cpp](https://github.com/HoangQuocVietIT24020359/Ninja_Adventure_3/blob/main/tutorial/main.cpp): File chính để chạy game.
+# References
+- [Youtube game SDL adventure](https://www.youtube.com/watch?v=1KD4Ae0tX0g&list=PL-K0viiuJ2RctP5nlJlqmHGeh66-GOZR_) 
+- https://wiki.libsdl.org/SDL2/Tutorials
+- https://lazyfoo.net/tutorials/SDL/index.php
 
