@@ -8,7 +8,7 @@ Dự án trò chơi này là một phần của môn học "Lập trình nâng c
 - Dự án được lấy cảm hứng từ tựa game __Savage Pursuit__.
 - Trong __Ninja Adventure__, người chơi sẽ bước vào một thế giới phong phú đầy màu sắc và mạo hiểm. Họ sẽ nhập vai vào một ninja dũng mãnh, sẵn sàng đối đầu với những thử thách khốc liệt, những quái vật cản đường và tiến lên phía trước.
 # Ngưỡng điểm 
-- Ngưỡng điểm mong muốn đạt được: 9-10 điểm.
+- Ngưỡng điểm mong muốn đạt được: 8-9 điểm.
 # Hướng dẫn chơi  
 ## Giao diện ban đầu
 ![image](https://github.com/HoangQuocVietIT24020359/Ninja_Adventure_3/blob/main/tutorial/images/menu_levels.jpg)
